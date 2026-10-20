@@ -1,0 +1,10 @@
+神社文化观察者测试——使用说明
+
+1. 不需要 Anaconda，也不需要安装任何软件。
+2. 双击 index.html，可以先在电脑浏览器中预览。
+3. 发布到 GitHub Pages 时，把 index.html 上传到 Clairemolly.github.io 仓库的最外层（根目录）。
+4. 等待约 1—3 分钟，在仓库 Settings → Pages 页面复制 GitHub 显示的正式网址。
+   按目前的仓库名称，它通常会是：https://clairejasmine.github.io/Clairemolly.github.io/
+5. 用 GitHub 显示的正式网址生成二维码，放到 PPT 里，同学就可以扫码答题。
+
+网页是纯静态页面，不收集姓名、答案或其他个人信息。

@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f1e8">
+  <meta name="description" content="完成8道题，看看你更习惯从什么角度观察日本神社文化。">
+  <title>你是哪一种神社文化观察者？</title>
+  <style>
+    :root {
+      --paper: #f6f1e8;
+      --paper-deep: #eee5d8;
+      --ink: #2f302f;
+      --muted: #696964;
+      --vermillion: #b64b3a;
+      --vermillion-deep: #98392d;
+      --vermillion-soft: #efd8d1;
+      --indigo: #466577;
+      --indigo-soft: #dce4e6;
+      --line: rgba(74, 61, 51, .16);
+      --shadow: 0 18px 45px rgba(76, 57, 43, .10);
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--paper); }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(182, 75, 58, .07), transparent 24rem),
+        radial-gradient(circle at 88% 88%, rgba(70, 101, 119, .08), transparent 27rem),
+        var(--paper);
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+    button:focus-visible { outline: 3px solid rgba(70, 101, 119, .35); outline-offset: 3px; }
+
+    .app {
+      width: min(100%, 760px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: max(18px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .06em;
+    }
+
+    .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; }
+    .brand-mark {
+      width: 22px;
+      height: 20px;
+      position: relative;
+      border-top: 4px solid var(--vermillion);
+      border-bottom: 3px solid var(--vermillion);
+    }
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      top: 1px;
+      bottom: -7px;
+      width: 3px;
+      background: var(--vermillion);
+    }
+    .brand-mark::before { left: 4px; }
+    .brand-mark::after { right: 4px; }
+
+    .screen { flex: 1; display: grid; align-items: center; animation: enter .36s ease both; }
+    @keyframes enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .hero { padding: 28px 4px 44px; text-align: center; }
+    .crest {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 26px;
+      border: 1px solid rgba(182, 75, 58, .28);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--vermillion);
+      background: rgba(255, 255, 255, .28);
+      font-family: Georgia, serif;
+      font-size: 38px;
+      box-shadow: inset 0 0 0 8px rgba(182, 75, 58, .035);
+    }
+    .eyebrow { margin: 0 0 10px; color: var(--vermillion); font-size: 13px; font-weight: 800; letter-spacing: .18em; }
+    h1 { margin: 0 auto 18px; max-width: 620px; font-family: "Songti SC", "STSong", serif; font-size: clamp(34px, 8vw, 56px); line-height: 1.16; letter-spacing: -.03em; }
+    .lead { max-width: 560px; margin: 0 auto; color: var(--muted); font-size: 17px; line-height: 1.85; }
+    .hint { margin: 22px 0 0; color: #7b756d; font-size: 13px; }
+
+    .primary,
+    .secondary {
+      min-height: 54px;
+      border-radius: 16px;
+      padding: 14px 22px;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+    .primary {
+      width: min(100%, 360px);
+      margin-top: 30px;
+      border: 0;
+      color: #fffaf4;
+      background: var(--vermillion);
+      font-weight: 800;
+      box-shadow: 0 12px 28px rgba(182, 75, 58, .22);
+    }
+    .primary:hover { background: var(--vermillion-deep); transform: translateY(-2px); }
+    .secondary { border: 1px solid var(--line); color: var(--ink); background: rgba(255, 255, 255, .32); font-weight: 700; }
+    .secondary:hover { background: rgba(255,255,255,.66); transform: translateY(-1px); }
+
+    .quiz-wrap { width: 100%; padding: 10px 0 34px; align-self: start; }
+    .quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: var(--muted); font-size: 13px; }
+    .progress { height: 7px; border-radius: 999px; overflow: hidden; background: rgba(70, 101, 119, .13); }
+    .progress > span { display: block; height: 100%; border-radius: inherit; background: var(--vermillion); transition: width .28s ease; }
+    .question-card {
+      margin-top: 26px;
+      padding: clamp(24px, 5vw, 40px);
+      border: 1px solid rgba(113, 91, 70, .12);
+      border-radius: 26px;
+      background: rgba(255, 253, 249, .74);
+      box-shadow: var(--shadow);
+    }
+    .question-no { margin: 0 0 12px; color: var(--vermillion); font-size: 13px; font-weight: 800; letter-spacing: .14em; }
+    .question { margin: 0 0 26px; font-family: "Songti SC", "STSong", serif; font-size: clamp(23px, 5vw, 31px); line-height: 1.45; }
+    .options { display: grid; gap: 12px; }
+    .option {
+      width: 100%; min-height: 64px; padding: 15px 16px;
+      border: 1px solid var(--line); border-radius: 17px;
+      display: flex; align-items: center; gap: 13px;
+      color: var(--ink); background: rgba(246, 241, 232, .62);
+      text-align: left; line-height: 1.55; cursor: pointer;
+      transition: border-color .18s, background .18s, transform .18s;
+    }
+    .option:hover { border-color: rgba(182,75,58,.55); background: #fffaf4; transform: translateX(2px); }
+    .option-letter { flex: 0 0 32px; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; color: var(--vermillion); background: var(--vermillion-soft); font-size: 13px; font-weight: 900; }
+    .quiz-actions { margin-top: 18px; min-height: 42px; }
+    .back { border: 0; padding: 8px 4px; color: var(--muted); background: transparent; cursor: pointer; }
+
+    .result-wrap { width: 100%; padding: 10px 0 36px; align-self: start; }
+    .result-card { overflow: hidden; border: 1px solid rgba(113,91,70,.12); border-radius: 28px; background: rgba(255,253,249,.8); box-shadow: var(--shadow); }
+    .result-head { padding: 32px clamp(24px, 6vw, 48px); color: #fffaf4; background: var(--vermillion); position: relative; overflow: hidden; }
+    .result-head::after { content: ""; position: absolute; right: -42px; top: -56px; width: 170px; height: 170px; border: 22px solid rgba(255,255,255,.10); border-radius: 50%; }
+    .result-kicker { position: relative; z-index: 1; margin: 0 0 9px; font-size: 13px; letter-spacing: .14em; opacity: .82; }
+    .result-type { position: relative; z-index: 1; margin: 0; font-family: "Songti SC", "STSong", serif; font-size: clamp(38px, 9vw, 60px); line-height: 1.1; }
+    .result-title { position: relative; z-index: 1; margin: 12px 0 0; max-width: 520px; font-size: 17px; line-height: 1.55; font-weight: 600; }
+    .result-body { padding: 28px clamp(24px, 6vw, 48px) 34px; }
+    .result-body p { margin: 0; color: #53534f; font-size: 16px; line-height: 1.88; }
+    .secondary-tag { margin: 22px 0; padding: 17px 18px; border-left: 4px solid var(--indigo); border-radius: 0 13px 13px 0; background: var(--indigo-soft); }
+    .secondary-tag strong { display: block; margin-bottom: 5px; color: var(--indigo); font-size: 14px; }
+    .secondary-tag p { font-size: 14px; line-height: 1.65; }
+    .recommend { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line); }
+    .recommend h3 { margin: 0 0 9px; color: var(--vermillion); font-size: 14px; letter-spacing: .08em; }
+    .disclaimer { margin-top: 20px !important; color: #858078 !important; font-size: 12px !important; line-height: 1.65 !important; }
+    .result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+    .result-actions button { width: 100%; margin: 0; }
+    .toast { min-height: 24px; margin: 12px 0 0; color: var(--indigo); text-align: center; font-size: 13px; }
+
+    footer { margin-top: auto; padding-top: 20px; color: #908a82; font-size: 11px; text-align: center; letter-spacing: .03em; }
+
+    @media (max-width: 520px) {
+      .app { padding-left: 14px; padding-right: 14px; }
+      .topbar { margin-bottom: 2px; }
+      .hero { padding-top: 18px; }
+      .question-card { border-radius: 22px; }
+      .result-actions { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>神社文化小测试</span></div>
+      <span id="topStatus">约 2 分钟</span>
+    </header>
+    <section id="screen" class="screen" aria-live="polite"></section>
+    <footer>课堂文化互动 · 结果仅供娱乐与文化交流使用</footer>
+  </main>
+
+  <script>
+    const TYPES = ["自然感受", "建筑空间", "神话故事", "仪式体验", "收藏记录", "地方生活"];
+    const LETTERS = ["A", "B", "C", "D"];
+
+    const questions = [
+      { q: "来到一座完全陌生的神社，你最可能先做什么？", a: [
+        ["看一看地图和建筑布局，确认参观路线", "建筑空间", "神话故事"],
+        ["找到树木、水边或比较安静的地方", "自然感受", "仪式体验"],
+        ["阅读入口处的祭神和历史介绍", "神话故事", "建筑空间"],
+        ["观察当地参拜者在做什么", "地方生活", "仪式体验"] ] },
+      { q: "旅行结束后，你的相册里最可能留下哪类照片？", a: [
+        ["树木、溪流、阳光和季节景色", "自然感受", "建筑空间"],
+        ["御守、御朱印或有趣的小物件", "收藏记录", "神话故事"],
+        ["祭神介绍、绘马内容和历史说明", "神话故事", "收藏记录"],
+        ["自己净手、参拜或抽签的过程", "仪式体验", "地方生活"] ] },
+      { q: "参观结束后突然多出20分钟，你更愿意：", a: [
+        ["按照完整顺序认真参拜一次", "仪式体验", "神话故事"],
+        ["再走一遍参道，观察屋顶和建筑细节", "建筑空间", "自然感受"],
+        ["到神社周边看看商店和当地人的生活", "地方生活", "收藏记录"],
+        ["去授予所仔细看看御守、御签和御朱印", "收藏记录", "仪式体验"] ] },
+      { q: "下面哪种经历最容易让你记住一个地方？", a: [
+        ["它的空间和建筑很有特点", "建筑空间", "仪式体验"],
+        ["整体环境让人感到安静或放松", "自然感受", "地方生活"],
+        ["背后的神话或传说令人意外", "神话故事", "建筑空间"],
+        ["亲自完成了一项有仪式感的体验", "仪式体验", "收藏记录"] ] },
+      { q: "来到神社的授予所，你最先注意什么？", a: [
+        ["御守和御朱印的颜色与设计", "收藏记录", "建筑空间"],
+        ["不同物品分别对应什么愿望", "仪式体验", "神话故事"],
+        ["图案中出现的狐狸、鹿、牛或植物", "神话故事", "自然感受"],
+        ["这座神社才有的限定物品", "地方生活", "收藏记录"] ] },
+      { q: "如果向朋友介绍一座神社，你更可能从哪里讲起？", a: [
+        ["建筑样式和参观路线", "建筑空间", "自然感受"],
+        ["供奉的神明及其传说", "神话故事", "收藏记录"],
+        ["参拜时应该做什么", "仪式体验", "神话故事"],
+        ["它与当地居民和生活有什么关系", "地方生活", "建筑空间"] ] },
+      { q: "如果安排一次新的神社旅行，你更想体验：", a: [
+        ["收集一枚特别的御朱印或御守", "收藏记录", "神话故事"],
+        ["在不同季节看看神社周围的自然景色", "自然感受", "地方生活"],
+        ["参加地方祭典或逛一逛附近街区", "地方生活", "仪式体验"],
+        ["按照建筑和空间主题参观几座神社", "建筑空间", "收藏记录"] ] },
+      { q: "一段旅行结束后，你最希望留下什么？", a: [
+        ["一件能够保存的纪念物或完整记录", "收藏记录", "神话故事"],
+        ["对当地声音、空气和景色的记忆", "自然感受", "仪式体验"],
+        ["一张最能表现建筑空间的照片", "建筑空间", "收藏记录"],
+        ["对当地居民与生活方式的新认识", "地方生活", "神话故事"] ] }
+    ];
+
+    const results = {
+      "自然感受": {
+        title: "你容易先感受到神社周围的自然环境",
+        text: "参观神社时，你可能会先注意树木、水流、风声、光线和季节变化。相比阅读大量文字，你更容易通过现场的气氛理解一个地方。神社周围的森林、水源和山体，在你看来并不是普通背景，而是神社文化的一部分。",
+        rec: "贵船神社的水神信仰、神社与河流的位置关系、镇守之森，以及季节变化对神社景观的影响。"
+      },
+      "建筑空间": {
+        title: "你习惯通过空间和建筑理解神社",
+        text: "你容易注意鸟居、参道、屋顶、围墙和建筑之间的位置关系。你可能会思考参拜路线为什么这样安排，建筑细节又反映了什么历史。对你来说，神社的空间本身就是一种文化信息。",
+        rec: "伊势神宫的神明造、神社的鸟居与参道、拜殿和本殿的区别，以及伏见稻荷大社千本鸟居形成的空间体验。"
+      },
+      "神话故事": {
+        title: "你更容易被神明和传说吸引",
+        text: "你会主动了解一座神社供奉谁、为什么建在这里，以及祭神经历过什么故事。面对神使、绘马或建筑图案时，你也会好奇它们背后的象征意义。神话能够帮助你把一座建筑变成一个完整的故事。",
+        rec: "多贺大社的伊邪那岐与伊邪那美、贵船神社的高龗神，以及日本神话在《女神异闻录4》等流行文化中的重新设计。"
+      },
+      "仪式体验": {
+        title: "你喜欢通过亲自参与理解文化",
+        text: "相比只在远处观看，你更愿意按照顺序净手、参拜、写绘马或抽御签。完成这些行为以后，你会更容易理解神社中的礼仪和空间安排。你关注的不只是物品本身，也包括人们如何使用它们。",
+        rec: "鸟居到拜殿的参拜动线、手水舍的净手步骤、拍手参拜、绘马书写和御神签的阅读方式。"
+      },
+      "收藏记录": {
+        title: "你喜欢用物品和记录保存旅行记忆",
+        text: "你容易被御朱印、御守、御签和限定设计吸引。你关注日期、图案、颜色以及不同物品代表的愿望。对你来说，这些小型物品能够把一次短暂的参观变成可以长期保存的旅行记录。",
+        rec: "御朱印帐的记录方式、不同御守的祈愿含义、神社限定图案，以及旧御守的返纳习惯。"
+      },
+      "地方生活": {
+        title: "你更关心神社与当地人的关系",
+        text: "你容易注意神社周围的居民、商店、祭典和日常活动。你会思考为什么一座小神社会出现在住宅区，地方居民又如何维护和使用它。对你来说，神社是观察日本地方社会的一扇窗口。",
+        rec: "神社在城市与乡村中的分布、地方祭典、初诣和七五三等人生礼仪，以及神社与社区活动之间的关系。"
+      }
+    };
+
+    const secondaryTexts = {
+      "自然感受": "你也很重视环境气氛、季节变化和自然景观。",
+      "建筑空间": "你也会留意空间布局、参观路线和建筑细节。",
+      "神话故事": "你也容易被祭神、历史和象征意义吸引。",
+      "仪式体验": "你也愿意通过参拜和实际体验理解文化。",
+      "收藏记录": "你也喜欢通过御朱印、御守或照片保存经历。",
+      "地方生活": "你也会关注神社与当地居民、街区和节庆的关系。"
+    };
+
+    let step = -1;
+    let answers = [];
+    const screen = document.getElementById("screen");
+    const status = document.getElementById("topStatus");
+
+    function home() {
+      step = -1;
+      answers = [];
+      status.textContent = "约 2 分钟";
+      screen.innerHTML = `
+        <div class="hero">
+          <div class="crest" aria-hidden="true">祈</div>
+          <p class="eyebrow">JINJA CULTURE QUIZ</p>
+          <h1>你是哪一种<br>神社文化观察者？</h1>
+          <p class="lead">面对同一座神社，每个人注意到的内容并不相同。完成 8 道题，看看你更习惯从什么角度观察神社文化。</p>
+          <p class="hint">请根据第一感觉选择，不需要考虑哪个选项“更正确”。</p>
+          <button class="primary" type="button" onclick="startQuiz()">开始测试</button>
+        </div>`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function startQuiz() { step = 0; renderQuestion(); }
+
+    function renderQuestion() {
+      const item = questions[step];
+      status.textContent = `${step + 1} / ${questions.length}`;
+      screen.innerHTML = `
+        <div class="quiz-wrap">
+          <div class="quiz-meta"><span>观察偏好测试</span><span>第 ${step + 1} 题</span></div>
+          <div class="progress" aria-label="答题进度"><span style="width:${((step + 1) / questions.length) * 100}%"></span></div>
+          <article class="question-card">
+            <p class="question-no">QUESTION ${String(step + 1).padStart(2, "0")}</p>
+            <h2 class="question">${item.q}</h2>
+            <div class="options">
+              ${item.a.map((option, index) => `<button class="option" type="button" onclick="choose(${index})"><span class="option-letter">${LETTERS[index]}</span><span>${option[0]}</span></button>`).join("")}
+            </div>
+          </article>
+          <div class="quiz-actions">${step > 0 ? '<button class="back" type="button" onclick="goBack()">← 返回上一题</button>' : '<button class="back" type="button" onclick="home()">← 回到首页</button>'}</div>
+        </div>`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function choose(index) {
+      answers[step] = index;
+      if (step < questions.length - 1) { step += 1; renderQuestion(); }
+      else { showResult(); }
+    }
+
+    function goBack() {
+      if (step > 0) { step -= 1; answers = answers.slice(0, step); renderQuestion(); }
+      else home();
+    }
+
+    function calculate() {
+      const scores = Object.fromEntries(TYPES.map(type => [type, 0]));
+      answers.forEach((answer, i) => {
+        const selected = questions[i].a[answer];
+        scores[selected[1]] += 2;
+        scores[selected[2]] += 1;
+      });
+      const firstChoice = questions[0].a[answers[0]][1];
+      const ranked = TYPES.slice().sort((a, b) => {
+        const scoreDiff = scores[b] - scores[a];
+        if (scoreDiff) return scoreDiff;
+        if (a === firstChoice) return -1;
+        if (b === firstChoice) return 1;
+        return TYPES.indexOf(a) - TYPES.indexOf(b);
+      });
+      return { main: ranked[0], secondary: ranked[1] };
+    }
+
+    function showResult() {
+      const { main, secondary } = calculate();
+      const result = results[main];
+      status.textContent = "测试完成";
+      screen.innerHTML = `
+        <div class="result-wrap">
+          <article class="result-card">
+            <header class="result-head">
+              <p class="result-kicker">你的神社文化观察方式</p>
+              <h2 class="result-type">${main}型</h2>
+              <p class="result-title">${result.title}</p>
+            </header>
+            <div class="result-body">
+              <p>${result.text}</p>
+              <div class="secondary-tag">
+                <strong>你的第二观察倾向 · ${secondary}</strong>
+                <p>${secondaryTexts[secondary]}</p>
+              </div>
+              <div class="recommend">
+                <h3>适合继续关注</h3>
+                <p>${result.rec}</p>
+              </div>
+              <p class="disclaimer">测试结果反映的是旅行观察偏好，不代表宗教身份，也不属于正式的参拜或占卜建议。</p>
+            </div>
+          </article>
+          <div class="result-actions">
+            <button class="secondary" type="button" onclick="home()">重新测试</button>
+            <button class="primary" type="button" onclick="shareResult('${main}', '${secondary}')">分享 / 复制结果</button>
+          </div>
+          <p id="toast" class="toast"></p>
+        </div>`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function shareResult(main, secondary) {
+      const text = `我的神社文化观察类型是「${main}型」，第二倾向是「${secondary}」。你是哪一种？`;
+      const data = { title: "你是哪一种神社文化观察者？", text, url: location.href };
+      const toast = document.getElementById("toast");
+      try {
+        if (navigator.share) { await navigator.share(data); toast.textContent = "分享面板已打开"; }
+        else if (navigator.clipboard) { await navigator.clipboard.writeText(`${text}\n${location.href}`); toast.textContent = "结果已复制，可以发给同学了"; }
+        else { toast.textContent = text; }
+      } catch (error) {
+        if (error && error.name !== "AbortError") toast.textContent = "暂时无法分享，请截图保存结果";
+      }
+    }
+
+    home();
+  </script>
+</body>
+</html>
